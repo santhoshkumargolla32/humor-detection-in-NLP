@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Humor Detection</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f0f0f0;
+            padding-top: 50px;
+        }
+        .container {
+            width: 300px;
+            margin: auto;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        #result {
+            margin-top: 20px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Humor Detection</h1>
+    <div class="container">
+        <input type="text" id="inputText" placeholder="Enter text here" style="width: 100%; padding: 10px;">
+        <button onclick="getPrediction()">Check for Humor</button>
+        <p id="result"></p>
+    </div>
+
+    <script>
+        async function getPrediction() {
+            const inputaText = document.getElementById("inputText").value;
+            const inputText= [inputaText]
+            const resultDiv = document.getElementById("result");
+
+            // Send the text to the backend
+            try {
+                const response = await fetch("http://127.0.0.1:5000/predict", {
+    method: "POST",
+    headers: {
+        "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ text: inputText })
+});
+                const data = await response.json();
+                    
+                // Display the result
+                if (data.prediction) {
+                    resultDiv.textContent = "Prediction: " + data.prediction;
+                } else {
+                    resultDiv.textContent = "Prediction failed. Check console for details.";
+                }
+            } catch (error) {
+                console.error("Error:", error);
+                resultDiv.textContent = "Error connecting to server.";
+            }
+        }
+    </script>
+</body>
+</html>
